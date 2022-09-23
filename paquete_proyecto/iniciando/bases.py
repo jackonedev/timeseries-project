@@ -1,4 +1,5 @@
 import pandas as pd
+from paquete_proyecto.herramientas.data_info import str_to_float
 
 # PAQUETE 01
 
@@ -36,7 +37,7 @@ cont = sequence()
 def definir_indice_temporal(data, label):
     global cont
     time_serie = pd.to_datetime(data[label], infer_datetime_format=True)
-    print(f"La longitud de la serie Nº {cont} es de: {len(time_serie)}")
+    print(f"La longitud de la serie Nº {next(cont)} es de: {len(time_serie)}")
     data[label] = time_serie
     data.sort_values(by=label, inplace=True)
     return data.set_index(label)
@@ -65,5 +66,9 @@ def importar_databases():
     # Creamos el indice para temporal
     ventas = definir_indice_temporal(ventas, "Fecha")
     ventas_sin_duplicados = definir_indice_temporal(ventas_sin_duplicados, "Fecha")
+
+    # Ajustamos el formato de string para poder ser convertido a float
+    ventas["Ventas"] = str_to_float(ventas["Ventas"])
+    ventas_sin_duplicados["Ventas"] = str_to_float(ventas_sin_duplicados["Ventas"])
 
     return ventas, ventas_sin_duplicados
