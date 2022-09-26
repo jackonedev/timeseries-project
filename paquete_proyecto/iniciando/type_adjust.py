@@ -9,6 +9,7 @@ def type_adjust(data):
             funcion 2: intenta eliminando el "." y cambiando la "," por "." 
         2do: float -> int
             función 3: si para cada fila x // int(x) == 0 entonces int(x)
+                        ademas tiene que tener un parámetro que fuerze el redondeo y un parametros de tolerancia
                         además debe evaluar que porcentaje de no cumple dicha condicion y si es menor al 1% cambiarlo igual
         3: str -> datetime
             función 4: para las columnas object restantes pd.to_datetime()
