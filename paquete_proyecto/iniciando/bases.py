@@ -1,7 +1,51 @@
 import pandas as pd
 from paquete_proyecto.herramientas.data_info import str_to_float
+from paquete_proyecto.iniciando.type_adjust import type_adjust
+
+# PAQUETE 2
+def ajustar_tipos(data):
+    """    
+    Función para ajustar los tipos de variables al formato deseado, de forma manual.
+    """
+    
+    for i, label in enumerate(list(data.columns)):
+        if label == "Ventas":
+            data[label] = data[label].astype(float)
+
+    return data
+
 
 # PAQUETE 01
+
+def importar_databases():
+    """Bases de datos para el proyecto:
+
+    Return: tuple = (ventas, ventas_sin_duplicados)
+    """
+
+    # Abrimos la base de datos
+    file_path = "./id_for_ideas/Ventas.csv"
+    ventas = pd.read_csv(file_path, sep=";", low_memory=False)
+
+    # Identificamos muestras de trabajo. Con y sin duplicados
+    ventas = mascara_1(ventas, "NombreCliente")
+    ventas_sin_duplicados = ventas.drop_duplicates()
+
+    # Eliminamos valores inconsistentes
+    ventas = eliminar_valores_inconsistente(ventas, "Cantidad")
+    ventas_sin_duplicados = eliminar_valores_inconsistente(
+        ventas_sin_duplicados, "Cantidad"
+    )
+
+    # Creamos el indice para temporal
+    ventas = definir_indice_temporal(ventas, "Fecha")
+    ventas_sin_duplicados = definir_indice_temporal(ventas_sin_duplicados, "Fecha")
+
+    # Ajustamos el formato de string para poder ser convertido a float
+    ventas["Ventas"] = str_to_float(ventas["Ventas"])
+    ventas_sin_duplicados["Ventas"] = str_to_float(ventas_sin_duplicados["Ventas"])
+
+    return type_adjust(ventas), type_adjust(ventas_sin_duplicados)
 
 
 def mascara_1(data, label):
@@ -43,32 +87,4 @@ def definir_indice_temporal(data, label):
     return data.set_index(label)
 
 
-def importar_databases():
-    """Bases de datos para el proyecto:
 
-    Return: tuple = (ventas, ventas_sin_duplicados)
-    """
-
-    # Abrimos la base de datos
-    file_path = "./id_for_ideas/Ventas.csv"
-    ventas = pd.read_csv(file_path, sep=";", low_memory=False)
-
-    # Identificamos muestras de trabajo. Con y sin duplicados
-    ventas = mascara_1(ventas, "NombreCliente")
-    ventas_sin_duplicados = ventas.drop_duplicates()
-
-    # Eliminamos valores inconsistentes
-    ventas = eliminar_valores_inconsistente(ventas, "Cantidad")
-    ventas_sin_duplicados = eliminar_valores_inconsistente(
-        ventas_sin_duplicados, "Cantidad"
-    )
-
-    # Creamos el indice para temporal
-    ventas = definir_indice_temporal(ventas, "Fecha")
-    ventas_sin_duplicados = definir_indice_temporal(ventas_sin_duplicados, "Fecha")
-
-    # Ajustamos el formato de string para poder ser convertido a float
-    ventas["Ventas"] = str_to_float(ventas["Ventas"])
-    ventas_sin_duplicados["Ventas"] = str_to_float(ventas_sin_duplicados["Ventas"])
-
-    return ventas, ventas_sin_duplicados
