@@ -2,10 +2,6 @@ import os
 from dotenv import load_dotenv  # remember: pip install python-dotenv
 import requests
 
-load_dotenv()
-
-TOKEN = os.environ["TOKEN_AV"]
-
 
 def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     """API SERVICE OF ALPHA VANTAGE
@@ -17,6 +13,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     api_key: personal TOKEN
     Return: JSON
     """
+
     function = function
     from_symbol = from_symbol
     to_symbol = to_symbol
@@ -36,5 +33,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
 if __name__ == "__main__":
     from pprint import pprint
 
+    load_dotenv()
+    TOKEN = os.environ["TOKEN_AV"]
     data = alpha_vantage_fx_api("FX_MONTHLY", "COP", "USD", TOKEN)
     pprint(data)
