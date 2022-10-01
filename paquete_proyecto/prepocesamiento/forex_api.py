@@ -41,7 +41,10 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     else:
         return None
 
-    return data.set_index(pd.to_datetime(data.index), drop=True)
+    data.set_index(pd.to_datetime(data.index), drop=True, inplace=True)
+    for label in list(data.columns):
+        data[label] = data[label].astype(float)
+    return data
 
 if __name__ == "__main__":
     from pprint import pprint
