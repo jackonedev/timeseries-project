@@ -33,16 +33,15 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     # Acá podría caber un context manager
 
     if function == "FX_DAILY":
-        return pd.DataFrame(data['Time Series FX (Daily)']).T
-
+        data = pd.DataFrame(data['Time Series FX (Daily)']).T
     elif function == "FX_WEEKLY":
-        return pd.DataFrame(data['Time Series FX (Weekly)']).T
-
+        data = pd.DataFrame(data['Time Series FX (Weekly)']).T
     elif function == "FX_MONTHLY":
-        return pd.DataFrame(data['Time Series FX (Monthly)']).T
-
+        data = pd.DataFrame(data['Time Series FX (Monthly)']).T
     else:
         return None
+
+    return data.set_index(pd.to_datetime(data.index), drop=True)
 
 if __name__ == "__main__":
     from pprint import pprint
