@@ -12,7 +12,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     from_symbol: first asset
     to_symbol: second asset
     api_key: personal TOKEN
-    Return: JSON
+    Return: pandas.DataFrame
     """
 
     function = function
@@ -33,11 +33,11 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     # Acá podría caber un context manager
 
     if function == "FX_DAILY":
-        data = pd.DataFrame(data['Time Series FX (Daily)']).T
+        data = pd.DataFrame(data["Time Series FX (Daily)"]).T
     elif function == "FX_WEEKLY":
-        data = pd.DataFrame(data['Time Series FX (Weekly)']).T
+        data = pd.DataFrame(data["Time Series FX (Weekly)"]).T
     elif function == "FX_MONTHLY":
-        data = pd.DataFrame(data['Time Series FX (Monthly)']).T
+        data = pd.DataFrame(data["Time Series FX (Monthly)"]).T
     else:
         return None
 
@@ -45,6 +45,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     for label in list(data.columns):
         data[label] = data[label].astype(float)
     return data
+
 
 if __name__ == "__main__":
     from pprint import pprint
