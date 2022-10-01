@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv  # remember: pip install python-dotenv
 import requests
+import pandas as pd
 
 
 def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
@@ -27,8 +28,21 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     URL += "&apikey=" + api_key
 
     r = requests.get(URL)
-    return r.json()
+    data = r.json()
 
+    # Acá podría caber un context manager
+
+    if function == "FX_DAILY":
+        return pd.DataFrame(data['Time Series FX (Daily)']).T
+
+    elif function == "FX_WEEKLY":
+        return pd.DataFrame(data['Time Series FX (Weekly)']).T
+
+    elif function == "FX_MONTHLY":
+        return pd.DataFrame(data['Time Series FX (Monthly)']).T
+
+    else:
+        return None
 
 if __name__ == "__main__":
     from pprint import pprint
