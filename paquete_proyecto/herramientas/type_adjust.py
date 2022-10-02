@@ -1,6 +1,7 @@
 import pandas as pd
 import pandas
 
+
 def type_adjust(data):
     """type_adjust()
 
@@ -28,14 +29,14 @@ def type_adjust(data):
 
 def get_index_name(data):
     if isinstance(data.index.name, type(None)):
-        return 'index'
+        return "index"
     else:
         return data.index.name
 
 
 ## FROM STRING TO ANOTHER TYPE
 def check_object_type(data: pandas.DataFrame) -> list[str]:
-    cols_mask = (data.dtypes== 'object').values
+    cols_mask = (data.dtypes == "object").values
     return data.loc[:, cols_mask].columns.values
 
 
@@ -63,7 +64,9 @@ def convert_object_to_float_2(data: pandas.DataFrame) -> pandas.DataFrame:
     cols = check_object_type(data)
     for label in cols:
         try:
-            data[label] = data[label].apply(lambda x: x.replace('.', '').replace(',', '.'))
+            data[label] = data[label].apply(
+                lambda x: x.replace(".", "").replace(",", ".")
+            )
             data[label] = data.astype(float)
         except:
             pass
@@ -72,8 +75,9 @@ def convert_object_to_float_2(data: pandas.DataFrame) -> pandas.DataFrame:
 
 ## FROM FLOAT TO INT
 def check_float_type(data: pandas.DataFrame) -> list[str]:
-    cols_mask = (data.dtypes== 'float').values
+    cols_mask = (data.dtypes == "float").values
     return data.loc[:, cols_mask].columns.values
+
 
 def convert_float_to_int(data):
     cols = check_float_type(data)
@@ -81,10 +85,3 @@ def convert_float_to_int(data):
         if (data[label] % data[label].astype(int)).sum() == 0.0:
             data[label] = data[label].astype(int)
     return data
-
-
-
-
-# if __name__ == '__main__':
-#     string = '1.350,05'
-#     print (string.replace('.', '').replace(',', '.'))

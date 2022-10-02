@@ -1,13 +1,15 @@
 import pandas as pd
-from paquete_proyecto.herramientas.data_info import str_to_float
-from paquete_proyecto.iniciando.type_adjust import type_adjust
+from paquete_proyecto.herramientas.extra import str_to_float, check_underscore
+from paquete_proyecto.herramientas.type_adjust import type_adjust
 
-# PAQUETE 2
+# FUNCION 2
+
+
 def ajustar_tipos(data):
-    """    
+    """
     Función para ajustar los tipos de variables al formato deseado, de forma manual.
     """
-    
+
     for i, label in enumerate(list(data.columns)):
         if label == "Ventas":
             data[label] = data[label].astype(float)
@@ -15,7 +17,8 @@ def ajustar_tipos(data):
     return data
 
 
-# PAQUETE 01
+# FUNCION 1
+
 
 def importar_databases():
     """Bases de datos para el proyecto:
@@ -26,8 +29,9 @@ def importar_databases():
     # Abrimos la base de datos
     file_path = "./id_for_ideas/Ventas.csv"
     ventas = pd.read_csv(file_path, sep=";", low_memory=False)
+    ventas = check_underscore(ventas)
 
-    # Identificamos muestras de trabajo. Con y sin duplicados
+    # Aplicamos mascara 1, y separamos con y sin duplicados
     ventas = mascara_1(ventas, "NombreCliente")
     ventas_sin_duplicados = ventas.drop_duplicates()
 
@@ -81,10 +85,7 @@ cont = sequence()
 def definir_indice_temporal(data, label):
     global cont
     time_serie = pd.to_datetime(data[label], infer_datetime_format=True)
-    print(f"La longitud de la serie Nº {next(cont)} es de: {len(time_serie)}")
+    # print(f"La longitud de la serie Nº {next(cont)} es de: {len(time_serie)}")
     data[label] = time_serie
     data.sort_values(by=label, inplace=True)
     return data.set_index(label)
-
-
-
