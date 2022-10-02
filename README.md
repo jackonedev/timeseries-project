@@ -12,9 +12,9 @@
 
 ### TEMAS
 
-- 1) CONSIGNA
-- 2) DESARROLLO
-- 3) CONCLUSIÓN
+- (1) CONSIGNA
+- (2) DESARROLLO
+- (3) CONCLUSIÓN
 
 <br /><br /><br />
 
