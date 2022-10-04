@@ -1,27 +1,10 @@
 import pandas as pd  # for develop
 import pandas  # for annotations
 from sklearn.model_selection import TimeSeriesSplit
+from paquete_proyecto.herramientas.type_adjust import type_adjust
 
 
-def date_range(data: pandas.DataFrame) -> pandas.DatetimeIndex:
-    """data must have DatetimeIndex in index"""
-    start_date = data.index.min()
-    end_date = data.index.max()
-    return pd.date_range(start=start_date, end=end_date)
-
-
-def build_default_sample(
-    index: pandas.DatetimeIndex, index_name: str
-) -> pandas.DataFrame:
-    date_range = index
-    muestra = pd.DataFrame(
-        [0.0 for i in range(len(date_range))], index=date_range, columns=["default"]
-    )
-    muestra.index.name = index_name
-    return muestra
-
-
-def complete_dates(data: pandas.DataFrame) -> pandas.DataFrame:
+def complete_dates(data: pandas.DataFrame, fillna='0.0') -> pandas.DataFrame:
     """Completa las fechas faltantes entre un máximo y un mínimo establecido
 
     Entry:
@@ -30,13 +13,30 @@ def complete_dates(data: pandas.DataFrame) -> pandas.DataFrame:
     DataFrame con indice expandido y NaNs en todas las filas completadas
 
     """
+    def date_range(data: pandas.DataFrame) -> pandas.DatetimeIndex:
+        """data must have DatetimeIndex in index"""
+        start_date = data.index.min()
+        end_date = data.index.max()
+        return pd.date_range(start=start_date, end=end_date)
+    def build_default_sample(
+        index: pandas.DatetimeIndex, index_name: str
+    ) -> pandas.DataFrame:
+        date_range = index
+        muestra = pd.DataFrame(
+            [0.0 for i in range(len(date_range))], index=date_range, columns=["default"]
+        )
+        muestra.index.name = index_name
+        return muestra
+
+
     dates = date_range(data)
     muestra = build_default_sample(dates, data.index.name)
     result = pd.merge(
         data.reset_index(), muestra.reset_index(), on=data.index.name, how="right"
     )
     result.set_index(data.index.name, inplace=True)
-    return result.drop(columns="default")
+    result.fillna(value=fillna, inplace=True)
+    return type_adjust(result.drop(columns="default"))
 
 
 def timeseries_cv(
@@ -62,3 +62,6 @@ def timeseries_cv(
     # Append last element from test into train list
     train.append(test[-1])
     return train
+
+
+
