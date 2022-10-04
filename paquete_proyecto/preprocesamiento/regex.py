@@ -44,7 +44,11 @@ def category_apply(
 
 
 def merge_category(
-    data: pd.DataFrame, feature: pd.DataFrame, shared_label: str, feature_label: str
+    data: pd.DataFrame,
+    feature: pd.DataFrame,
+    shared_label: str,
+    feature_label: str,
+    fillna="NaL",
 ) -> pd.DataFrame:
     """Ejmplo de implementacion
 
@@ -59,7 +63,7 @@ def merge_category(
     ):
         return pd.merge(
             left=data, right=feature[feature_label], how="outer", on=shared_label
-        )
+        ).fillna(value=fillna)
 
     def make_merge_reseting_index(
         data=data,
@@ -68,12 +72,16 @@ def merge_category(
         feature_label=feature_label,
     ):
         index_label: str = data.reset_index(drop=False).columns[0]
-        return pd.merge(
-            left=data.reset_index(drop=False),
-            right=feature[feature_label],
-            how="outer",
-            on=shared_label,
-        ).set_index(index_label)
+        return (
+            pd.merge(
+                left=data.reset_index(drop=False),
+                right=feature[feature_label],
+                how="outer",
+                on=shared_label,
+            )
+            .set_index(index_label)
+            .fillna(value=fillna)
+        )
 
     if not isinstance(data.index, pd.core.indexes.datetimes.DatetimeIndex):
         return make_merge()

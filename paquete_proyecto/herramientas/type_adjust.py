@@ -76,24 +76,23 @@ def convert_object_to_float_2(data: pandas.DataFrame) -> pandas.DataFrame:
 ## FROM FLOAT TO INT
 
 
-
 def convert_float_to_int(data: pandas.DataFrame) -> pandas.DataFrame:
     """NOTA PARA RECORDAR
-    
+
     Cuando todos los valores son float pero menores a 1, la condición lógica interpreta la columna como int
     Con que 1 solo valor sea mayor o igual a 1 se cumple la condicion
     Entonces, con que 1 solo elemento sea divisor a 1 de mayor a 1, entonces no hay que cambiar la columna a int
     """
+
     def check_float_type(data: pandas.DataFrame) -> list[str]:
         cols_mask = (data.dtypes == "float").values
-        return data.loc[:, cols_mask].columns.values  
-
+        return data.loc[:, cols_mask].columns.values
 
     cols = check_float_type(data)
     for label in cols:
         if 1 / data.sample(1)[label].values > 1:
             continue
 
-        elif (data[label] % data[label].astype(int)).sum() == 0.:
+        elif (data[label] % data[label].astype(int)).sum() == 0.0:
             data[label] = data[label].astype(int)
     return data

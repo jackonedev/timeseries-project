@@ -39,6 +39,7 @@ def importar_databases():
 
     Return: tuple = (ventas, ventas_sin_duplicados)
     """
+
     def mascara_1(data, label):
         """Para quitar una clase extraña de NaN's. Todo lo que no sea un string, se elimina"""
         mascara = []
@@ -50,6 +51,7 @@ def importar_databases():
             else:
                 mascara[i] = False
         return data.loc[mascara]
+
     def eliminar_valores_inconsistente(data, label):
         data.loc[data[label] == "1,068", label] = 1
         data.loc[data[label] == "1,006", label] = 1
