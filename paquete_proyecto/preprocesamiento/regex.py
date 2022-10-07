@@ -27,10 +27,10 @@ def category_apply(
 
     def set_label():
         x = counter()
-        label = "category_" + str(next(x))
+        label = "category" + str(next(x))
         while True:
             if (pd.DataFrame([label]).isin(data.columns)).values:
-                label = "category_" + str(next(x))
+                label = "category" + str(next(x))
             elif next(x) == 100:
                 break
             else:
