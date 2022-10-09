@@ -24,7 +24,8 @@ def type_adjust(data):
     data = convert_object_to_float(data)
     data = convert_object_to_float_2(data)
     data = convert_float_to_int(data)
-    return data.set_index(index, drop=True)
+    data.set_index(index, drop=True, inplace=True)
+    return data
 
 
 def get_index_name(data):
