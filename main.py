@@ -2,16 +2,16 @@ import os
 from dotenv import load_dotenv
 
 # (I)
-from paquete_proyecto.iniciando.bases import importar_databases, ajustar_tipos
+from paquete_proyecto.data_feed.bases import importar_databases, ajustar_tipos
 
 # (II)
-from paquete_proyecto.preprocesamiento.forex_api import alpha_vantage_fx_api
-from paquete_proyecto.preprocesamiento.cotizacion import (
+from paquete_proyecto.data_prepare.forex_api import alpha_vantage_fx_api
+from paquete_proyecto.data_prepare.cotizacion import (
     criterio_valor_apertura,
     preparar_cotizacion,
     agregar_cotizacion,
 )
-from paquete_proyecto.preprocesamiento.muestreo import complete_dates
+from paquete_proyecto.data_prepare.muestreo import complete_dates
 
 
 # PROGRAMA PRINCIPAL

@@ -1,7 +1,7 @@
 # Directorios que intento fusionar
 tp_final_dh
 *.png
-
+/data/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
