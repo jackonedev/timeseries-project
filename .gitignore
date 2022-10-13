@@ -2,6 +2,9 @@
 tp_final_dh
 *.png
 /data/*
+objects/*
+html/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
