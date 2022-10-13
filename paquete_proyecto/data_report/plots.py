@@ -226,13 +226,11 @@ class GraphUploader:
 
     def show(self):
         if self.figure is None:
-            return
+            return False
         self.processor.figure.show()
     
     def show_all(self):
         for figure in self.processor.figures.values():
-            if self.figure is None:
-                continue
             figure.show()
 
     def upload(self, filename, auto_open=True):

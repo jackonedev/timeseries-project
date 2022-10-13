@@ -15,8 +15,8 @@ next(x3)
 def enumerar_figuras(func):
     global x3
     try:
-        func()
-        print (f"Figura {next(x3)}")
+        if func() is None:
+            print (f"Figura {next(x3)}")
     except:
         pass
 
