@@ -209,7 +209,7 @@ class BackendPlotter:
         self.figure.show()
         return self.processor, "plot_areas"
 
-    def plot_kind(self, kind="bar", resample=None, select_figure=False, download_html=False):
+    def plot_kind(self, kind="bar", resample=None):
         with_resample = lambda obj, param: obj.current_content.resample(param).sum()
         if resample is not None:
             self.figure = with_resample(self.processor , resample).plot(**self.visual_data_kind(kind))
@@ -221,15 +221,6 @@ class BackendPlotter:
 
 
 class GraphUploader:
-    # TODO: Esta clase se acaba de romper debido a que VisualProcessor no tiene un atributo llamado self.figures = {}
-    """GraphUploader
-    - Recieves an VisalProcessor instance as an obj attribute
-    - Shows all the figures plot in the VisualProcesor instance with "show_figures()"
-    - Can set a particular figure with "set_figure()":
-        - if figure is None: set a figure throw input command else provide key for self.figures dictionary
-    - With the "show()" method you can plot your activated figure
-    - With the "upload()" method you can upload plot into Chart Studio, need to provide a "filename"
-    """
 
     load_dotenv()
     USER = os.environ["USER_CS"]
