@@ -32,8 +32,20 @@ def descargar_imagen(obj, dir_name="html", prefix="img", suffix=None):
 
 
 def descargar_objeto(obj, dir_name="objects", prefix="obj", suffix=None):
-    """Descarga un objeto en formato pickle (Serializado)"""
+    """Descarga un objeto en formato pickle (Serializado)
+    
+    #TODO
+    mira el nombre de los ficheros del directorio
+    mira el primer caracter del nombre de los ficheros del directorio
+    mientras count() esté dentro de la lista, count()
+    cuando count() no esté en la lista, agregarlo al nombre del fichero que se va a descargar   
+    
+    """
+
+
+
     file_name = f"{crear_directorio(dir_name)}\\{crear_rotulo_pickle(prefix=prefix, suffix=suffix)}"
+
     with open(file_name, "wb") as f:
         pickle.dump(obj, f)
 
@@ -61,14 +73,14 @@ def string_replace_blank(string):
 def crear_rotulo_html(prefix, suffix):
     global x1
     if suffix is not None:
-        return f"{prefix}_{next(x1)}_{string_replace_blank(suffix)}.html"
-    return f"{prefix}_{next(x1)}.html"
+        return f"{next(x1)}_{prefix}_{string_replace_blank(suffix)}.html"
+    return f"{next(x1)}_{prefix}.html"
 
 
 def crear_rotulo_pickle(prefix, suffix):
     global x2
     if suffix is not None:
-        return f"{prefix}_{next(x1)}_{string_replace_blank(suffix)}.pickle"
-    return f"{prefix}_{next(x1)}.pickle"
+        return f"{next(x2)}_{prefix}_{string_replace_blank(suffix)}.pickle"
+    return f"{next(x2)}_{prefix}.pickle"
 
 
