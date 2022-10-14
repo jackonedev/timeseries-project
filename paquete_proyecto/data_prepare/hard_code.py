@@ -25,7 +25,7 @@ def hard_category_id(data: pandas.DataFrame, name: str = "Id") -> pandas.DataFra
     return data
 
 
-def hard_category_1(data: pandas.DataFrame, label='category1') -> pandas.DataFrame:
+def hard_category_1(data: pandas.DataFrame, label="category1") -> pandas.DataFrame:
     """Ayuda para entender la funcion hard_category_1
 
     Es un criterio de categorización rígido, impuesto por el analista.

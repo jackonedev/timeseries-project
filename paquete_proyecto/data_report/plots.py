@@ -7,34 +7,42 @@ from time import sleep
 from dotenv import load_dotenv
 import os
 from abc import ABC
+from itertools import count
 
 from paquete_proyecto.data_report.tools import descargar_imagen
 
 
 class VisualizerData:
-    """VisualizerData: 
+    """VisualizerData:
     - Storage some default values for graphs attributes
     - Storage a list of DataFrames
     - Storage a list with strings, must have same length than the previous list
     - Build an iterator for dataframe list
     - Build an iterator for feature list
     """
+
     height = 400
     width = 900
-    template = 'plotly_dark'
-    pd.options.plotting.backend = 'plotly'
+    template = "plotly_dark"
+    pd.options.plotting.backend = "plotly"
 
-    def __init__(self, frame_list: list[pd.DataFrame], features: list[str], y_label=None, title_suffix=None):
+    def __init__(
+        self,
+        frame_list: list[pd.DataFrame],
+        features: list[str],
+        y_label=None,
+        title_suffix=None,
+    ):
         self.dataset_iterator = iter(frame_list)
         self.feature_iterator = iter(features)
         self.dataframe_list = frame_list
         self.features = features
-        self.figures = {}
         self.y_axis_label = y_label
         self.title_suffix = title_suffix
 
+
 class VisualProcessor(ABC, VisualizerData):
-    """ Visual Processor
+    """Visual Processor
     - Tiene su metodo constructivo separado
     - cumple con la funcion obj.set_content()
     - admite obj.set_content().set_title()
@@ -64,12 +72,13 @@ class VisualProcessor(ABC, VisualizerData):
         instance.set_content().plot()
 
     # or Calling a particular feature
-    
+
     instance.set_content(feature="B").plot()
 
     """
+
     current_content = None
-    title="{} , {}"
+    title = "{} , {}"
 
     def _get_content(self):
         return next(self.dataset_iterator, None)
@@ -78,8 +87,13 @@ class VisualProcessor(ABC, VisualizerData):
         self.title_format = new_title
         return self
 
-
-    def set_content(self, feature=None, y_label=None , ascending=False, title_suffix=None, download_html=False, select_figures=True):
+    def set_content(
+        self,
+        feature=None,
+        y_label=None,
+        ascending=False,
+        title_suffix=None,
+    ):
         """set_content
         Es un método que devuelve un objeto listo para aplicarsele el método "plot()".
         Si feature es None ejecuta el iterador
@@ -92,20 +106,31 @@ class VisualProcessor(ABC, VisualizerData):
                     self.current_content = self.dataframe_list[i]
                     self.current_feature = feature
                     break
-        # Collect DataFrame from list by iterator
+        # Or Collect DataFrame from list by iterator
         else:
             if feature is not None:
-                print ("logg. No se encontró la feature solicitada")
+                print("logg. No se encontró la feature solicitada")
             self.current_content = self._get_content()
             self.current_feature = next(self.feature_iterator, None)
         # Ordering columns
-        self.current_content = self.current_content.reindex(dict(zip(self.current_content.sum().sort_values(ascending=ascending).index, self.current_content.columns)), axis=1)
-        # Set graphs attributes for plot        
+        self.current_content = self.current_content.reindex(
+            dict(
+                zip(
+                    self.current_content.sum().sort_values(ascending=ascending).index,
+                    self.current_content.columns,
+                )
+            ),
+            axis=1,
+        )
+        
+        # Set graphs attributes for plotter
         if y_label is not None:
             self.title_format = self.title.format(self.current_feature, y_label)
             self.y_axis_label = {"value": y_label}
         else:
-            self.title_format = self.title.format(self.current_feature, self.y_axis_label)
+            self.title_format = self.title.format(
+                self.current_feature, self.y_axis_label
+            )
             self.y_axis_label = {"value": self.y_axis_label}
 
         if title_suffix is not None:
@@ -113,76 +138,145 @@ class VisualProcessor(ABC, VisualizerData):
         else:
             if self.title_suffix is not None:
                 self.title_format += f" - ({self.title_suffix})"
-        # Set user interface parámeters
-        self.download = download_html
-        self.select_figures = select_figures
         return self
 
-###############################################
 
-    def plot(self):
-        self.figure = self.current_content.plot(title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-        sleep(0.1)
-        self.figure.show()
-        if self.download:
-            sleep(0.1)
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-                self.figures[self.current_feature] = self.figure
-                return
-        if self.select_figures:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.title_format = title # si el titulo ya estaba seteado, habrá que setearselo de vuelta
-                self.figure = self.current_content.plot(title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-                self.figures[self.current_feature] = self.figure
+class PlotterStorage(ABC):
+    def __init__(self):
+        self.figures = {}
+        self.count = count()
+
+    def add_graph(self, key, value):
+        self.figures[key+'_'+str(next(self.count))] = value
 
 
-    def plot_area(self):
-        self.figure = self.current_content.plot.area(title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-        sleep(0.1)
-        self.figure.show()
-        if self.download:
-            sleep(0.1)
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-                self.figures[self.current_feature] = self.figure
-                return
-        if self.select_figures:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.title_format = title
-                self.figure = self.current_content.plot.area(title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-                self.figures[self.current_feature] = self.figure
+class BackendPlotter:
+    def __init__(self, processor, select_figures=False, download_html=False):
+        self.processor: VisualProcessor = processor
+        self.download = download_html
+        self.select_figures = select_figures
 
-
-    def plot_kind(self, kind='bar', resample=None):
-        if resample is not None:
-            self.figure = self.current_content.resample(resample).sum().plot(kind=kind, title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-        else:
-            self.figure = self.current_content.plot(kind=kind, title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-        sleep(0.1)
-        self.figure.show()
-        if self.download:
-            sleep(0.1)
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-                self.figures[self.current_feature] = self.figure
-                return
-        if self.select_figures:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.title_format = title
-                if resample is not None:
-                    self.figure = self.current_content.resample(resample).sum().plot(kind=kind, title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-                else:
-                    self.figure = self.current_content.plot(kind=kind, title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
-                self.figures[self.current_feature] = self.figure    
-
+    def visual_data(self):#TODO
+        return dict(title=self.processor.title_format, height=self.processor.height, width=self.processor.width, labels=self.processor.y_axis_label, template=self.processor.template)
     
+    def plot(self, select_figure=False, download_html=False):
+        self.figure = self.processor.current_content.plot(
+            title=self.processor.title_format,
+            height=self.processor.height,
+            width=self.processor.width,
+            labels=self.processor.y_axis_label,
+            template=self.processor.template,
+        )
+        sleep(0.1)
+        self.figure.show()
+        if self.select_figures or select_figure:
+            sleep(0.1)
+            if title := input("Ingrese título para guardar\nEnter para saltear"):
+                self.processor.title_format = title
+                self.figure = self.processor.current_content.plot(
+                    title=self.processor.title_format,
+                    height=self.processor.height,
+                    width=self.processor.width,
+                    labels=self.processor.y_axis_label,
+                    template=self.processor.template,
+                )
+        if self.download or download_html:
+            if name := input("Ingrese nombre para guardar\nEnter para salir"):
+                descargar_imagen(obj=self.figure, suffix=name)
+        return self.processor.current_feature, self.figure
+
+
+    def plot_area(self, select_figure=False, download_html=False):
+        self.figure = self.processor.current_content.plot.area(
+            title=self.processor.title_format,
+            height=self.processor.height,
+            width=self.processor.width,
+            labels=self.processor.y_axis_label,
+            template=self.processor.template,
+        )
+        sleep(0.1)
+        self.figure.show()
+        if self.select_figures or select_figure:
+            sleep(0.1)
+            if title := input("Ingrese título para guardar\nEnter para saltear"):
+                self.processor.title_format = title
+                self.figure = self.processor.current_content.plot.area(
+                    title=self.processor.title_format,
+                    height=self.processor.height,
+                    width=self.processor.width,
+                    labels=self.processor.y_axis_label,
+                    template=self.processor.template,
+                )
+        if self.download or download_html:
+            if name := input("Ingrese nombre para guardar\nEnter para salir"):
+                descargar_imagen(obj=self.figure, suffix=name)
+        return self.processor.current_feature, self.figure
+
+
+    def plot_kind(self, kind="bar", resample=None, select_figure=False, download_html=False):
+        ############################################################################################################################################################ hacer esos lambdas para toda la clase
+        with_resample = lambda obj, param: obj.current_content.resample(param).sum()
+        without_resample = lambda obj: obj.current_content#TODO
+
+        if resample is not None:
+            self.figure = (
+                with_resample(self.processor , resample)#TODO
+                .plot(
+                    kind=kind,
+                    title=self.processor.title_format,
+                    height=self.processor.height,
+                    width=self.processor.width,
+                    labels=self.processor.y_axis_label,
+                    template=self.processor.template,
+                )
+            )
+        else:
+            self.figure = self.processor.current_content.plot(
+                kind=kind,
+                title=self.processor.title_format,
+                height=self.processor.height,
+                width=self.processor.width,
+                labels=self.processor.y_axis_label,
+                template=self.processor.template,
+            )
+        sleep(0.1)
+        self.figure.show()
+        if self.select_figures or select_figure:
+            sleep(0.1)
+            if title := input("Ingrese título para guardar\nEnter para saltear"):
+                self.processor.title_format = title
+                if resample is not None:
+                    self.figure = (
+                        self.processor.current_content.resample(resample)
+                        .sum()
+                        .plot(
+                            kind=kind,
+                            title=self.processor.title_format,
+                            height=self.processor.height,
+                            width=self.processor.width,
+                            labels=self.processor.y_axis_label,
+                            template=self.processor.template,
+                        )
+                    )
+                else:
+                    self.figure = self.processor.current_content.plot(
+                        kind=kind,
+                        title=self.processor.title_format,
+                        height=self.processor.height,
+                        width=self.processor.width,
+                        labels=self.processor.y_axis_label,
+                        template=self.processor.template,
+                    )
+                # self.storage.figures[self.processor.current_feature] = self.figure
+        if self.download or download_html:
+            if name := input("Ingrese nombre para guardar\nEnter para salir"):
+                descargar_imagen(obj=self.figure, suffix=name)
+        return self.processor.current_feature, self.figure
+
 
 class GraphUploader:
-    """ GraphUploader
+    # TODO: Esta clase se acaba de romper debido a que VisualProcessor no tiene un atributo llamado self.figures = {}
+    """GraphUploader
     - Recieves an VisalProcessor instance as an obj attribute
     - Shows all the figures plot in the VisualProcesor instance with "show_figures()"
     - Can set a particular figure with "set_figure()":
@@ -190,18 +284,19 @@ class GraphUploader:
     - With the "show()" method you can plot your activated figure
     - With the "upload()" method you can upload plot into Chart Studio, need to provide a "filename"
     """
+
     load_dotenv()
     USER = os.environ["USER_CS"]
     TOKEN = os.environ["TOKEN_CS"]
     tls.set_credentials_file(username=USER, api_key=TOKEN)
-    pd.options.plotting.backend = 'plotly'
+    pd.options.plotting.backend = "plotly"
 
     def __init__(self, processor):
-        self.processor: VisualProcessor = processor
+        self.processor: PlotterStorage = processor
         self.figure = None
 
     def show_figures(self):
-        print (f"Figures: {self.processor.figures.keys()}")
+        print(f"Figures: {self.processor.figures.keys()}")
 
     def set_figure(self, figure=None, select=False):
         if figure is not None and list(self.processor.figures.keys()).count(figure) > 0:
@@ -210,30 +305,30 @@ class GraphUploader:
             return self
 
         elif select:
-            print (f"Select Figure: {self.processor.figures.keys()}")
+            print(f"Select Figure: {self.processor.figures.keys()}")
             while True:
-                if name:= input('Select figure = '):
+                if name := input("Select figure = "):
                     if list(self.processor.figures.keys()).count(name) > 0:
                         self.figure = True
                         self.processor.figure = self.processor.figures[name]
                         return self
                     else:
-                        print ("label not found: check type writting or press enter to exit")
+                        print(
+                            "label not found: check type writting or press enter to exit"
+                        )
                         continue
                 else:
-                    print ("Figure set up failed")
+                    print("Figure set up failed")
                 break
         else:
             self.figure = None
             return self
 
-        
-
     def show(self):
         if self.figure is None:
             return False
         self.processor.figure.show()
-    
+
     def show_all(self):
         for figure in self.processor.figures.values():
             figure.show()
