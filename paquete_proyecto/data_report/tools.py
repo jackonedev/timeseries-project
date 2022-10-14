@@ -2,7 +2,6 @@ from itertools import count
 import os
 import pickle
 
-
 x1 = count()  # for crear_rotulo_html()
 next(x1)
 
@@ -71,3 +70,5 @@ def crear_rotulo_pickle(prefix, suffix):
     if suffix is not None:
         return f"{prefix}_{next(x1)}_{string_replace_blank(suffix)}.pickle"
     return f"{prefix}_{next(x1)}.pickle"
+
+
