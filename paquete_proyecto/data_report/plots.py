@@ -145,133 +145,79 @@ class PlotterStorage(ABC):
     def __init__(self):
         self.figures = {}
         self.count = count()
+        
+    def add_graph(self, processor, type_graph, kind=None, resample=None, select_figures=False, download_html=False):
+        def visual_data_wt():
+            return dict(height=processor.height, width=processor.width, labels=processor.y_axis_label, template=processor.template)
+        def visual_data_kind_wt(kind):
+            return dict(kind=kind, height=processor.height, width=processor.width, labels=processor.y_axis_label, template=processor.template)
 
-    def add_graph(self, key, value):
-        self.figures[key+'_'+str(next(self.count))] = value
+        num = next(self.count)
+        if select_figures:
+            if title := input("Ingrese título para guardar\nEnter para saltear"):
+                
+                if type_graph == "plot":
+                    self.figure = processor.current_content.plot(
+                        title = title,
+                        **visual_data_wt()
+                    )
+
+                elif type_graph == "plot_areas":
+                    self.figure = processor.current_content.plot.area(
+                        title = title,
+                        **visual_data_wt()
+                    )
+
+                elif type_graph == 'kind':
+                    if resample:
+                        with_resample = lambda obj, param: obj.current_content.resample(param).sum()
+                        self.figure = with_resample(processor, resample).plot(
+                            title=title,
+                            **visual_data_kind_wt(kind)
+                        )
+                    else:
+                        self.figure = processor.current_content.plot(
+                            title=title,
+                            **visual_data_kind_wt(kind)
+                        )
+                self.figures[processor.current_feature+'_'+str(num)] = self.figure
+            
+            if download_html:
+                if name := input("Ingrese nombre para guardar\nEnter para salir"):
+                    descargar_imagen(obj=self.figure, suffix=name)
 
 
 class BackendPlotter:
-    def __init__(self, processor, select_figures=False, download_html=False):
+    def __init__(self, processor):
         self.processor: VisualProcessor = processor
-        self.download = download_html
-        self.select_figures = select_figures
 
-    def visual_data(self):#TODO
+    def visual_data(self):
         return dict(title=self.processor.title_format, height=self.processor.height, width=self.processor.width, labels=self.processor.y_axis_label, template=self.processor.template)
     
-    def plot(self, select_figure=False, download_html=False):
-        self.figure = self.processor.current_content.plot(
-            title=self.processor.title_format,
-            height=self.processor.height,
-            width=self.processor.width,
-            labels=self.processor.y_axis_label,
-            template=self.processor.template,
-        )
+    def visual_data_kind(self, kind):
+        return dict(kind=kind, title=self.processor.title_format, height=self.processor.height, width=self.processor.width, labels=self.processor.y_axis_label, template=self.processor.template)
+    
+    def plot(self):
+        self.figure = self.processor.current_content.plot(**self.visual_data())
         sleep(0.1)
         self.figure.show()
-        if self.select_figures or select_figure:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.processor.title_format = title
-                self.figure = self.processor.current_content.plot(
-                    title=self.processor.title_format,
-                    height=self.processor.height,
-                    width=self.processor.width,
-                    labels=self.processor.y_axis_label,
-                    template=self.processor.template,
-                )
-        if self.download or download_html:
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-        return self.processor.current_feature, self.figure
+        return self.processor, 'plot'
 
-
-    def plot_area(self, select_figure=False, download_html=False):
-        self.figure = self.processor.current_content.plot.area(
-            title=self.processor.title_format,
-            height=self.processor.height,
-            width=self.processor.width,
-            labels=self.processor.y_axis_label,
-            template=self.processor.template,
-        )
+    def plot_area(self):
+        self.figure = self.processor.current_content.plot.area(**self.visual_data())
         sleep(0.1)
         self.figure.show()
-        if self.select_figures or select_figure:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.processor.title_format = title
-                self.figure = self.processor.current_content.plot.area(
-                    title=self.processor.title_format,
-                    height=self.processor.height,
-                    width=self.processor.width,
-                    labels=self.processor.y_axis_label,
-                    template=self.processor.template,
-                )
-        if self.download or download_html:
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-        return self.processor.current_feature, self.figure
-
+        return self.processor, "plot_areas"
 
     def plot_kind(self, kind="bar", resample=None, select_figure=False, download_html=False):
-        ############################################################################################################################################################ hacer esos lambdas para toda la clase
         with_resample = lambda obj, param: obj.current_content.resample(param).sum()
-        without_resample = lambda obj: obj.current_content#TODO
-
         if resample is not None:
-            self.figure = (
-                with_resample(self.processor , resample)#TODO
-                .plot(
-                    kind=kind,
-                    title=self.processor.title_format,
-                    height=self.processor.height,
-                    width=self.processor.width,
-                    labels=self.processor.y_axis_label,
-                    template=self.processor.template,
-                )
-            )
+            self.figure = with_resample(self.processor , resample).plot(**self.visual_data_kind(kind))
         else:
-            self.figure = self.processor.current_content.plot(
-                kind=kind,
-                title=self.processor.title_format,
-                height=self.processor.height,
-                width=self.processor.width,
-                labels=self.processor.y_axis_label,
-                template=self.processor.template,
-            )
+            self.figure = self.processor.current_content.plot(**self.visual_data_kind(kind))
         sleep(0.1)
         self.figure.show()
-        if self.select_figures or select_figure:
-            sleep(0.1)
-            if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.processor.title_format = title
-                if resample is not None:
-                    self.figure = (
-                        self.processor.current_content.resample(resample)
-                        .sum()
-                        .plot(
-                            kind=kind,
-                            title=self.processor.title_format,
-                            height=self.processor.height,
-                            width=self.processor.width,
-                            labels=self.processor.y_axis_label,
-                            template=self.processor.template,
-                        )
-                    )
-                else:
-                    self.figure = self.processor.current_content.plot(
-                        kind=kind,
-                        title=self.processor.title_format,
-                        height=self.processor.height,
-                        width=self.processor.width,
-                        labels=self.processor.y_axis_label,
-                        template=self.processor.template,
-                    )
-                # self.storage.figures[self.processor.current_feature] = self.figure
-        if self.download or download_html:
-            if name := input("Ingrese nombre para guardar\nEnter para salir"):
-                descargar_imagen(obj=self.figure, suffix=name)
-        return self.processor.current_feature, self.figure
+        return self.processor, 'kind', kind, resample
 
 
 class GraphUploader:
