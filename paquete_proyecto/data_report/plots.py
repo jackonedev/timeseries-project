@@ -24,13 +24,14 @@ class VisualizerData:
     template = 'plotly_dark'
     pd.options.plotting.backend = 'plotly'
 
-    def __init__(self, frame_list: list[pd.DataFrame], features: list[str]):
+    def __init__(self, frame_list: list[pd.DataFrame], features: list[str], y_label=None, title_suffix=None):
         self.dataset_iterator = iter(frame_list)
         self.feature_iterator = iter(features)
         self.dataframe_list = frame_list
         self.features = features
         self.figures = {}
-
+        self.y_axis_label = y_label
+        self.title_suffix = title_suffix
 
 class VisualProcessor(ABC, VisualizerData):
     """ Visual Processor
@@ -78,7 +79,7 @@ class VisualProcessor(ABC, VisualizerData):
         return self
 
 
-    def set_content(self, feature=None, y_label=None , ascending=False, title_suffix=None, download=False, select_figures=True):
+    def set_content(self, feature=None, y_label=None , ascending=False, title_suffix=None, download_html=False, select_figures=True):
         """set_content
         Es un método que devuelve un objeto listo para aplicarsele el método "plot()".
         Si feature es None ejecuta el iterador
@@ -101,15 +102,19 @@ class VisualProcessor(ABC, VisualizerData):
         self.current_content = self.current_content.reindex(dict(zip(self.current_content.sum().sort_values(ascending=ascending).index, self.current_content.columns)), axis=1)
         # Set graphs attributes for plot        
         if y_label is not None:
-            self.y_axis_label = {"value": y_label}
             self.title_format = self.title.format(self.current_feature, y_label)
+            self.y_axis_label = {"value": y_label}
         else:
-            self.y_axis_label = {"value": "value"}
-            self.title_format = self.title.format(self.current_feature, "")
+            self.title_format = self.title.format(self.current_feature, self.y_axis_label)
+            self.y_axis_label = {"value": self.y_axis_label}
+
         if title_suffix is not None:
             self.title_format += f" - ({title_suffix})"
+        else:
+            if self.title_suffix is not None:
+                self.title_format += f" - ({self.title_suffix})"
         # Set user interface parámeters
-        self.download = download
+        self.download = download_html
         self.select_figures = select_figures
         return self
 
@@ -128,7 +133,7 @@ class VisualProcessor(ABC, VisualizerData):
         if self.select_figures:
             sleep(0.1)
             if title := input("Ingrese título para guardar\nEnter para saltear"):
-                self.title_format = title
+                self.title_format = title # si el titulo ya estaba seteado, habrá que setearselo de vuelta
                 self.figure = self.current_content.plot(title=self.title_format, height=self.height, width=self.width, labels=self.y_axis_label, template=self.template)
                 self.figures[self.current_feature] = self.figure
 
