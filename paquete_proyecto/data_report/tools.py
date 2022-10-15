@@ -35,39 +35,22 @@ def descargar_imagen(obj, dir_name="html", prefix="img", suffix=None):
 
 
 def descargar_objeto(obj, dir_name="objects", prefix="obj", suffix=None):
-    """Descarga un objeto en formato pickle (Serializado)
-    
-    #TODO
-    mira el nombre de los ficheros del directorio
-    mira el primer caracter del nombre de los ficheros del directorio
-    mientras count() esté dentro de la lista, count()
-    cuando count() no esté en la lista, agregarlo al nombre del fichero que se va a descargar   
-    
-    """
+    """Descarga un objeto en formato pickle (Serializado)"""
     global x4
 
     path = f"{os.getcwd()}\\{dir_name}"
     list_dir = os.listdir(path)
-    print (list_dir)
-
+    last_val = 0
     for nombre in list_dir:
         if nombre[0].isdigit():
             last_val = int(nombre[0])
-
-    print (last_val)
-
     x = next(x4)
     while last_val >= x:
         x = next(x4)
-    
-    print (x)
-
-
     file_name = f"{crear_directorio(dir_name)}\\{crear_rotulo_pickle(prefix=prefix, suffix=suffix, x=x)}"
 
-    print (file_name)
-    # with open(file_name, "wb") as f:
-    #     pickle.dump(obj, f)
+    with open(file_name, "wb") as f:
+        pickle.dump(obj, f)
 
 
 def cargar_objeto(file_name, dir_name="objects"):
@@ -101,13 +84,3 @@ def crear_rotulo_pickle(prefix, suffix, x=1):
     if suffix is not None:
         return f"{x}_{prefix}_{string_replace_blank(suffix)}.pickle"
     return f"{x}_{prefix}.pickle"
-
-
-if __name__ == "__main__":
-    
-    my_var = "hola_mundo"
-
-    descargar_objeto(my_var)
-    
-    pass
-
