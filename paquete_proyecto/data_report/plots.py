@@ -223,8 +223,8 @@ class BackendPlotter:
 class GraphUploader:
 
     load_dotenv()
-    USER = os.environ["USER_CS"]
-    TOKEN = os.environ["TOKEN_CS"]
+    USER = os.environ["USER_CS_J"]
+    TOKEN = os.environ["TOKEN_CS_J"]
     tls.set_credentials_file(username=USER, api_key=TOKEN)
     pd.options.plotting.backend = "plotly"
 
