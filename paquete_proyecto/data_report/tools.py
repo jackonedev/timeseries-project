@@ -5,9 +5,20 @@ import pickle
 x1 = count()  # for crear_rotulo_html()
 next(x1)
 
+x2 = count() # for crear_rotulo_csv()
+next(x2)
+
 x4 = count()  # for descargar_objeto()
 next(x4)
 
+def descargar_csv(frame, dir_name="csv", prefix="db", suffix=None):
+    """Recibe un dataframe y los almacena en formato csv"""
+    frame.to_csv(
+        crear_directorio(dir_name)
+        + "\\"
+        + crear_rotulo_csv(prefix=prefix, suffix=suffix),
+    ) 
+    
 
 def descargar_imagen(obj, dir_name="html", prefix="img", suffix=None):
     """Descarga una figure en formato HTML"""
@@ -63,6 +74,12 @@ def crear_rotulo_html(prefix, suffix):
     if suffix is not None:
         return f"{next(x1)}_{prefix}_{string_replace_blank(suffix)}.html"
     return f"{next(x1)}_{prefix}.html"
+
+def crear_rotulo_csv(prefix, suffix):
+    global x1
+    if suffix is not None:
+        return f"{next(x2)}_{prefix}_{string_replace_blank(suffix)}.csv"
+    return f"{next(x2)}_{prefix}.csv"
 
 
 def crear_rotulo_pickle(prefix, suffix, x=1):

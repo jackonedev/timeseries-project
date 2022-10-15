@@ -186,6 +186,10 @@ class PlotterStorage(ABC):
                 if name := input("Ingrese nombre para guardar\nEnter para salir"):
                     descargar_imagen(obj=self.figure, suffix=name)
 
+    def download_html(self):
+        for name, figure in self.figures.items():
+            descargar_imagen(obj=figure, suffix=name)
+
 
 class BackendPlotter:
     def __init__(self, processor):
@@ -223,8 +227,8 @@ class BackendPlotter:
 class GraphUploader:
 
     load_dotenv()
-    USER = os.environ["USER_CS_J"]
-    TOKEN = os.environ["TOKEN_CS_J"]
+    USER = os.environ["USER_CS"]
+    TOKEN = os.environ["TOKEN_CS"]
     tls.set_credentials_file(username=USER, api_key=TOKEN)
     pd.options.plotting.backend = "plotly"
 
