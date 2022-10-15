@@ -11,8 +11,11 @@ next(x2)
 x3 = count()  # for enumerate_figures()
 next(x3)
 
+x4 = count()  # for descargar_objeto()
+next(x4)
 
-def enumerar_figuras(func):
+
+def enumerar_figuras(func): # se usa en presentacion.ipynb?
     global x3
     try:
         if func() is None:
@@ -41,13 +44,30 @@ def descargar_objeto(obj, dir_name="objects", prefix="obj", suffix=None):
     cuando count() no esté en la lista, agregarlo al nombre del fichero que se va a descargar   
     
     """
+    global x4
+
+    path = f"{os.getcwd()}\\{dir_name}"
+    list_dir = os.listdir(path)
+    print (list_dir)
+
+    for nombre in list_dir:
+        if nombre[0].isdigit():
+            last_val = int(nombre[0])
+
+    print (last_val)
+
+    x = next(x4)
+    while last_val >= x:
+        x = next(x4)
+    
+    print (x)
 
 
+    file_name = f"{crear_directorio(dir_name)}\\{crear_rotulo_pickle(prefix=prefix, suffix=suffix, x=x)}"
 
-    file_name = f"{crear_directorio(dir_name)}\\{crear_rotulo_pickle(prefix=prefix, suffix=suffix)}"
-
-    with open(file_name, "wb") as f:
-        pickle.dump(obj, f)
+    print (file_name)
+    # with open(file_name, "wb") as f:
+    #     pickle.dump(obj, f)
 
 
 def cargar_objeto(file_name, dir_name="objects"):
@@ -77,10 +97,17 @@ def crear_rotulo_html(prefix, suffix):
     return f"{next(x1)}_{prefix}.html"
 
 
-def crear_rotulo_pickle(prefix, suffix):
-    global x2
+def crear_rotulo_pickle(prefix, suffix, x=1):
     if suffix is not None:
-        return f"{next(x2)}_{prefix}_{string_replace_blank(suffix)}.pickle"
-    return f"{next(x2)}_{prefix}.pickle"
+        return f"{x}_{prefix}_{string_replace_blank(suffix)}.pickle"
+    return f"{x}_{prefix}.pickle"
 
+
+if __name__ == "__main__":
+    
+    my_var = "hola_mundo"
+
+    descargar_objeto(my_var)
+    
+    pass
 
