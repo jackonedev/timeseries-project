@@ -21,8 +21,8 @@ class VisualizerData:
     - Build an iterator for feature list
     """
 
+    width = 765# 765: for dashboard # 900: for exploring
     height = 400
-    width = 900
     template = "plotly_dark"
     pd.options.plotting.backend = "plotly"
 
@@ -228,26 +228,26 @@ class GraphUploader:
     tls.set_credentials_file(username=USER, api_key=TOKEN)
     pd.options.plotting.backend = "plotly"
 
-    def __init__(self, processor):
-        self.processor: PlotterStorage = processor
+    def __init__(self, storage):
+        self.storage: PlotterStorage = storage
         self.figure = None
 
     def show_figures(self):
-        print(f"Figures: {self.processor.figures.keys()}")
+        print(f"Figures: {self.storage.figures.keys()}")
 
     def set_figure(self, figure=None, select=False):
-        if figure is not None and list(self.processor.figures.keys()).count(figure) > 0:
+        if figure is not None and list(self.storage.figures.keys()).count(figure) > 0:
             self.figure = True
-            self.processor.figure = self.processor.figures[figure]
+            self.storage.figure = self.storage.figures[figure]
             return self
 
         elif select:
-            print(f"Select Figure: {self.processor.figures.keys()}")
+            print(f"Select Figure: {self.storage.figures.keys()}")
             while True:
                 if name := input("Select figure = "):
-                    if list(self.processor.figures.keys()).count(name) > 0:
+                    if list(self.storage.figures.keys()).count(name) > 0:
                         self.figure = True
-                        self.processor.figure = self.processor.figures[name]
+                        self.storage.figure = self.storage.figures[name]
                         return self
                     else:
                         print(
@@ -264,11 +264,18 @@ class GraphUploader:
     def show(self):
         if self.figure is None:
             return False
-        self.processor.figure.show()
+        self.storage.figure.show()
 
     def show_all(self):
-        for figure in self.processor.figures.values():
+        for figure in self.storage.figures.values():
             figure.show()
 
     def upload(self, filename, auto_open=True):
-        py.plot(self.processor.figure, filename=filename, auto_open=auto_open)
+        if self.figure:
+            py.plot(self.storage.figure, filename=filename, auto_open=auto_open)
+        else:
+            print ("It's necesary to apply method set_figure() first")
+
+    def upload_all(self, auto_open=False):
+        for key, figure in self.storage.figures.items():
+            py.plot(figure, filename=input('select filename: '), auto_open=auto_open)

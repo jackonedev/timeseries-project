@@ -5,23 +5,8 @@ import pickle
 x1 = count()  # for crear_rotulo_html()
 next(x1)
 
-x2 = count()  # for crear_rotulo_pickle()
-next(x2)
-
-x3 = count()  # for enumerate_figures()
-next(x3)
-
 x4 = count()  # for descargar_objeto()
 next(x4)
-
-
-def enumerar_figuras(func): # se usa en presentacion.ipynb?
-    global x3
-    try:
-        if func() is None:
-            print(f"Figura {next(x3)}")
-    except:
-        pass
 
 
 def descargar_imagen(obj, dir_name="html", prefix="img", suffix=None):
