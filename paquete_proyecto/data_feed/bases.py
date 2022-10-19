@@ -58,7 +58,7 @@ def importar_databases():
         return data
 
     # Abrimos la base de datos
-    file_path = "./id_for_ideas/Ventas.csv"
+    file_path = "./src/Ventas.csv"
     ventas = pd.read_csv(file_path, sep=";", low_memory=False)
 
     # Aplicamos mascara 1, y separamos con y sin duplicados
