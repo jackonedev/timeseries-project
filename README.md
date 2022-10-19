@@ -1,18 +1,16 @@
 <i>Este es un resumen de presentacion.ipynb</i>
 
-# <u>PROYECTO</u>: SERVICIO AUTOMOTRIZ **"AUTO MOTORS"**
+# <u>PROYECTO</u>: SERVICIO AUTOMOTRIZ **"AUTOMOTORS"**
 
 ![logo](https://user-images.githubusercontent.com/113382260/193469015-485cc23c-faef-4897-8617-2a5ee17470d7.png)
 
-## Time Series Project - Data Science - Webapp Deploy
+## Time Series - Data Science - Webapp Deploy
 ### <i>Agustin F. Stigliano - Python Developer y Data Scientist</i>
 
 <div>
     <p style="color:black;">WebApp Presentation: <a href="https://jackonedev.herokuapp.com/app/1">https://jackonedev.herokuapp.com/app/1</a></p>
     <p style="color:black;">Techicanl Presentation: <a href="https://chart-studio.plotly.com/~af.st22/61/b-style/#/">https://chart-studio.plotly.com/~af.st22/61/b-style/#/</a></p>
 </div>
-
-#### Año 2022
 
 ## <u>Descripción del proyecto</u>
 Contamos con datos internos de la empresa como "Ventas" y "Empleados".<br />
