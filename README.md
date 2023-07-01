@@ -9,9 +9,8 @@
 ### <i>Agustin F. Stigliano - Python Developer y Data Scientist</i>
 
 <div>
-    <p style="color:black;">WebApp Presentation (shutted down): <a href="https://jackonedev.herokuapp.com/app/1">https://jackonedev.herokuapp.com/app/1</a></p>
     <p style="color:black;">WebApp Deploy Repository https://github.com/jackonedev/timeseries-presentation</p>
-    <p style="color:black;">Techicanl Presentation: <a href="https://chart-studio.plotly.com/~af.st22/61/b-style/#/">https://chart-studio.plotly.com/~af.st22/61/b-style/#/</a></p>
+    <p style="color:black;">Presentación Técnica: <a href="https://chart-studio.plotly.com/~af.st22/61/b-style/#/">https://chart-studio.plotly.com/~af.st22/61/b-style/#/</a></p>
 </div>
 
 ## <u>Descripción del proyecto</u>
