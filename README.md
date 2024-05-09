@@ -6,18 +6,16 @@
 ## Time Series - Data Science - Webapp Deploy
 
 
-### <i>Agustin F. Stigliano - Python Developer y Data Scientist</i>
+### <i>Agustin F. Stigliano - Python Developer & Data Scientist</i>
 
 <div>
-    <p style="color:black;">WebApp Deploy Repository https://github.com/jackonedev/timeseries-presentation</p>
-    <p style="color:black;">Presentación Técnica: <a href="https://chart-studio.plotly.com/~af.st22/61/b-style/#/">https://chart-studio.plotly.com/~af.st22/61/b-style/#/</a></p>
+    <p style="color:black;">Technical Presentation: <a href="https://chart-studio.plotly.com/~af.st22/61/b-style/#/">https://chart-studio.plotly.com/~af.st22/61/b-style/#/</a></p>
 </div>
 
 ## <u>Descripción del proyecto</u>
-Contamos con datos internos de la empresa como "Ventas" y "Empleados".<br />
-Requieren analizar el impacto de la pandemia para evaluar si vender la empresa, si quiebra o si salir a buscar inversores para expansión del negocio hacia otros países.
+We are required to analyze the internal data of the company and make use of the "sells", "product_category", "location", and "employee" to figure out the impact of the pandemic on their business, and to present some solution that helps them make decisions. The data was treated both as a time series dataset and also as a discrete dataset, multiple interactive charts were presented in a web app slideshow presentation with the most relevant insights of each one of them.
 
-<br />
+The code presented in the **Technical Presentation** is a readable version that summarizes most of the work.<br />
+The last lines of code are commented (at the bottom) because the output would break the current format.
 
-## <u>Objetivo</u>
-El cliente necesita contar con toda la información ya analizada para tomar una decisión final.
+After making EDA, and preprocessing, we use Plotly to create multiple plots at once, store them into an object, then execute sequentially all the charts, and select dynamically which one of them to save. After selecting the relevant charts, we uploaded them into **Chart-Studio** and obtained an embed iframe URL to use in our Jupyter Notebook directly on the web app slideshow (Mercury Framework).
