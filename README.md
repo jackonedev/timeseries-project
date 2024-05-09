@@ -19,3 +19,5 @@ The code presented in the **Technical Presentation** is a readable version that 
 The last lines of code are commented (at the bottom) because the output would break the current format.
 
 After making EDA, and preprocessing, we use Plotly to create multiple plots at once, store them into an object, then execute sequentially all the charts, and select dynamically which one of them to save. After selecting the relevant charts, we uploaded them into **Chart-Studio** and obtained an embed iframe URL to use in our Jupyter Notebook directly on the web app slideshow (Mercury Framework).
+
+The most relevant part done was to convert **from COP to USD** from the **Alpha Vantage API** in a weekly quotation.
